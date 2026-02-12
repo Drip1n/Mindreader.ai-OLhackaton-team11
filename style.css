@@ -6,6 +6,7 @@
     --text-main: #f4f4f5;
     --text-muted: #a1a1aa;
     --success: #10b981;
+    --danger: #ef4444;
 }
 
 body {
@@ -16,7 +17,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Žiadne scrollovanie */
+    overflow: hidden;
 }
 
 .app-container {
@@ -30,7 +31,7 @@ body {
     box-sizing: border-box;
 }
 
-/* --- GAME CARD (Vľavo) --- */
+/* --- GAME CARD --- */
 .game-card {
     flex: 1.5;
     background: var(--panel-bg);
@@ -43,6 +44,7 @@ body {
     text-align: center;
     border: 1px solid #27272a;
     box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    position: relative;
 }
 
 .logo {
@@ -62,9 +64,7 @@ body {
 }
 
 /* Tlačidlá */
-.btn-primary, .btn-action {
-    background: var(--text-main);
-    color: var(--bg-dark);
+.btn-primary, .btn-action, .btn-success, .btn-cancel {
     border: none;
     padding: 15px 40px;
     font-size: 1.1rem;
@@ -72,6 +72,16 @@ body {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--text-main);
+    color: var(--bg-dark);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    transform: translateY(-2px);
 }
 
 .btn-action {
@@ -88,9 +98,22 @@ body {
     transform: translateY(-2px);
 }
 
-.hidden { display: none; }
+.btn-ghost {
+    background: transparent;
+    border: 1px solid #3f3f46;
+    color: #52525b;
+    font-size: 0.9rem;
+    padding: 10px 20px;
+    margin-top: 40px;
+}
+.btn-ghost:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
 
-/* --- DASHBOARD (Vpravo) --- */
+.hidden { display: none !important; }
+
+/* --- DASHBOARD --- */
 .dashboard {
     flex: 1;
     background: rgba(24, 24, 27, 0.8);
@@ -167,7 +190,7 @@ body {
 #guess-list li:nth-child(2) { animation-delay: 0.2s; }
 #guess-list li:nth-child(3) { animation-delay: 0.3s; }
 
-/* --- DATA FLOW PANEL (Novinka) --- */
+/* --- DATA FLOW PANEL --- */
 .data-flow-panel {
     background: #000;
     border-top: 1px solid var(--accent);
@@ -202,6 +225,7 @@ body {
     opacity: 0.3;
     transition: all 0.3s;
     border: 1px solid transparent;
+    position: relative; /* Pre bublinu */
 }
 
 .flow-node.active {
@@ -214,62 +238,128 @@ body {
 
 .flow-arrow { color: #3f3f46; font-weight: bold; }
 
-/* Animácie */
+/* --- REASONING BUBBLE (Novinka) --- */
+.reasoning-bubble {
+    position: absolute;
+    bottom: 130%; /* Nad nodom */
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-main);
+    color: var(--bg-dark);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    z-index: 100;
+    pointer-events: none;
+    animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.reasoning-bubble::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--text-main) transparent transparent transparent;
+}
+
+/* --- OVERLAYS & MODALS (Novinka) --- */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal-card {
+    background: rgba(24, 24, 27, 0.95);
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 0 50px var(--accent-glow);
+    max-width: 500px;
+    width: 90%;
+    animation: scaleIn 0.3s ease-out;
+}
+
+.modal-header {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.modal-guess-text {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    margin: 0;
+}
+
+.modal-confidence {
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono';
+    margin-top: 10px;
+}
+
+.modal-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-success {
+    background: var(--success);
+    color: #fff;
+}
+.btn-success:hover {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-cancel {
+    background: transparent;
+    border: 1px solid #3f3f46;
+    color: var(--text-muted);
+}
+.btn-cancel:hover {
+    border-color: var(--text-main);
+    color: var(--text-main);
+}
+
+/* Celebration */
+.celebration .modal-icon {
+    font-size: 4rem;
+    margin-bottom: 10px;
+    animation: bounce 1s infinite;
+}
+
+.celebration {
+    border-color: var(--success);
+    box-shadow: 0 0 50px rgba(16, 185, 129, 0.3);
+}
+
+/* Animations */
 @keyframes blink { 50% { opacity: 0.5; } }
 @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 @keyframes pulseText { 0% { opacity: 0.5; } 100% { opacity: 1; } }
+@keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes popUp { from { transform: translateX(-50%) translateY(10px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
 .thinking { animation: pulseText 0.8s infinite alternate; color: var(--accent); }
-
-/* Move Restart button to bottom of game card */
-#restart-btn {
-    position: absolute;
-    bottom: 250px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-/* Make game-card relative so absolute works */
-.game-card {
-    position: relative;
-}
-
-/* Final guess panel */
-.final-panel {
-    margin-top: 10px;
-    padding: 18px 20px;
-    border-radius: 14px;
-    border: 1px solid rgba(59, 130, 246, 0.35);
-    background: rgba(59, 130, 246, 0.08);
-    box-shadow: 0 0 18px rgba(59, 130, 246, 0.18);
-    max-width: 680px;
-}
-
-.final-badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-}
-
-.final-guess {
-    font-size: 1.7rem;
-    font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: 6px;
-}
-
-.final-confidence {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-}
-
-.final-sub {
-    margin: 0;
-    color: var(--text-muted);
-}
-

@@ -5,6 +5,16 @@ const flowNodes = {
   ai: document.getElementById("node-ai"),
 };
 
+const ui = {
+  overlay: document.getElementById("overlay-container"),
+  resultModal: document.getElementById("result-modal"),
+  celebrationModal: document.getElementById("celebration-modal"),
+  guessText: document.getElementById("modal-guess-text"),
+  confidenceText: document.getElementById("modal-confidence-text"),
+  reasoningBubble: document.getElementById("ai-reasoning-bubble"),
+  reasoningText: document.getElementById("reasoning-text")
+};
+
 function setInputWaiting(isWaiting) {
   const node = flowNodes.input;
   if (!node) return;
@@ -31,22 +41,39 @@ async function flashNode(nodeName, duration = 200) {
   node.classList.remove("active");
 }
 
-function showFinalPanel(finalGuess) {
-  const panel = document.getElementById("final-panel");
-  const guessText = document.getElementById("final-guess-text");
-  const guessConf = document.getElementById("final-guess-confidence");
-
-  if (!panel || !guessText || !guessConf) return;
-
-  panel.classList.remove("hidden");
-  guessText.innerText = `I think it is: ${finalGuess?.name || "Unknown"}`;
-  guessConf.innerText = `${finalGuess?.confidence ?? 99}%`;
+function updateReasoning(text) {
+  if (!text) {
+    ui.reasoningBubble.classList.add("hidden");
+    return;
+  }
+  ui.reasoningText.innerText = text;
+  ui.reasoningBubble.classList.remove("hidden");
 }
 
-function hideFinalPanel() {
-  const panel = document.getElementById("final-panel");
-  if (panel) panel.classList.add("hidden");
+// --- MODAL LOGIC ---
+
+function showGuessModal(guess) {
+  ui.guessText.innerText = guess.name || "Unknown Object";
+  ui.confidenceText.innerText = (guess.confidence || 90) + "% Match";
+  
+  ui.overlay.classList.remove("hidden");
+  ui.resultModal.classList.remove("hidden");
+  ui.celebrationModal.classList.add("hidden");
 }
+
+function confirmGuess() {
+  ui.resultModal.classList.add("hidden");
+  ui.celebrationModal.classList.remove("hidden");
+  // Confetti effect can go here if needed
+}
+
+function rejectGuess() {
+  // Hide overlays and continue game
+  ui.overlay.classList.add("hidden");
+  ui.resultModal.classList.add("hidden");
+}
+
+// --- MAIN GAME LOOP ---
 
 async function sendAnswer(answerValue) {
   const questionElement = document.getElementById("question-text");
@@ -65,7 +92,6 @@ async function sendAnswer(answerValue) {
   if (startBtn) startBtn.style.display = "none";
   if (restartBtn) {
     restartBtn.classList.remove("hidden");
-    restartBtn.style.display = "inline-block";
   }
   if (gameBtns) {
     gameBtns.classList.remove("hidden");
@@ -100,6 +126,10 @@ async function sendAnswer(answerValue) {
     // AI lights only if backend says AI used
     if (data.ai_used) {
       const aiNode = flowNodes.ai;
+      
+      // Update Reasoning Bubble
+      updateReasoning(data.reasoning);
+
       if (aiNode) {
         aiNode.classList.add("active");
         await sleep(1000); // keep AI lit >= 1s
@@ -107,20 +137,18 @@ async function sendAnswer(answerValue) {
       }
     }
 
-    // update UI question / final state
-    if (data.final && data.final_guess) {
-      // show final guess panel + set big text
-      showFinalPanel(data.final_guess);
-      questionElement.innerText = "The AI is confident. Final guess ready.";
-    } else {
-      hideFinalPanel();
-      questionElement.innerText = data.question || "No question returned.";
-    }
+    // update UI question
+    questionElement.innerText = data.question || "No question returned.";
 
     // Data returned to frontend
     await flashNode("frontend", 200);
 
     updateDashboard(data);
+
+    // Final Guess Logic
+    if (data.final && data.final_guess) {
+      showGuessModal(data.final_guess);
+    }
 
     // waiting for next click
     setInputWaiting(true);
@@ -134,7 +162,6 @@ async function sendAnswer(answerValue) {
 }
 
 function updateDashboard(data) {
-  // confidence bar still uses your simulated backend number
   const confBar = document.getElementById("conf-bar");
   const confText = document.getElementById("conf-text");
   const conf = Math.max(0, Math.min(100, Number(data.confidence || 0)));
@@ -142,18 +169,15 @@ function updateDashboard(data) {
   if (confBar) confBar.style.width = conf + "%";
   if (confText) confText.innerText = conf + "%";
 
-  // remaining pool
   const poolCount = document.getElementById("pool-count");
   if (poolCount) {
     const remaining = typeof data.remaining === "number" ? data.remaining : null;
     poolCount.innerText = remaining !== null ? remaining.toLocaleString() : "Unknown";
   }
 
-  // guesses list with probability
   const list = document.getElementById("guess-list");
   if (list) {
     list.innerHTML = "";
-
     const guesses = Array.isArray(data.guesses) ? data.guesses : [];
 
     if (guesses.length === 0) {
@@ -185,12 +209,13 @@ function updateDashboard(data) {
 }
 
 function startGame() {
-  hideFinalPanel();
+  ui.overlay.classList.add("hidden");
+  updateReasoning(null);
   sendAnswer("start");
 }
 
 function restartGame() {
-  // reset UI quickly
+  // reset UI
   const confBar = document.getElementById("conf-bar");
   const confText = document.getElementById("conf-text");
   const poolCount = document.getElementById("pool-count");
@@ -202,7 +227,12 @@ function restartGame() {
   if (poolCount) poolCount.innerText = "Unknown";
   if (list) list.innerHTML = `<li class="placeholder">Waiting for data...</li>`;
   if (q) q.innerText = "Resetting game...";
-  hideFinalPanel();
+  
+  // Hide all modals
+  ui.overlay.classList.add("hidden");
+  ui.resultModal.classList.add("hidden");
+  ui.celebrationModal.classList.add("hidden");
+  updateReasoning(null);
 
   sendAnswer("start");
 }
