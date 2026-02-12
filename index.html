@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Mind Reader | NOTN Project</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <main class="game-box">
+            <h1>Can AI Read Your Mind?</h1>
+            <p id="question-text">Think of an object... and I will try to guess it!</p>
+            
+            <div class="controls">
+                <button onclick="sendAnswer('yes')">Yes</button>
+                <button onclick="sendAnswer('no')">No</button>
+                <button onclick="sendAnswer('maybe')">Maybe</button>
+            </div>
+        </main>
+
+        <aside class="dashboard">
+            <h2>AI Reasoning</h2>
+            <div class="stat-item">
+                <span>Confidence:</span>
+                <div class="progress-bar"><div id="confidence-fill" style="width: 0%"></div></div>
+                <span id="confidence-value">0%</span>
+            </div>
+            <div class="stat-item">
+                <span>Possibilities:</span>
+                <span id="remaining-count">Calculating...</span>
+            </div>
+            <div class="predictions">
+                <h3>Top Predictions:</h3>
+                <ul id="prediction-list">
+                    <li>Waiting for input...</li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

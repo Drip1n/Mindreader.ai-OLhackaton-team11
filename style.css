@@ -1,0 +1,60 @@
+:root {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --accent: #38bdf8;
+    --text: #f8fafc;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+    width: 90%;
+    max-width: 1000px;
+}
+
+.game-box, .dashboard {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.game-box { flex: 2; text-align: center; }
+.dashboard { flex: 1; border-left: 4px solid var(--accent); }
+
+button {
+    background: var(--accent);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 5px;
+    transition: transform 0.2s;
+}
+
+button:hover { transform: scale(1.05); }
+
+.progress-bar {
+    background: #334155;
+    height: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+#confidence-fill {
+    background: var(--accent);
+    height: 100%;
+    transition: width 0.5s ease-in-out;
+}
