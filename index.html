@@ -3,41 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Mind Reader | NOTN Project</title>
+    <title>AI Mind Reader | NOTN 2026</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <main class="game-box">
-            <h1>Can AI Read Your Mind?</h1>
-            <p id="question-text">Think of an object... and I will try to guess it!</p>
+    <div class="app-container">
+        
+        <section class="game-card">
+            <header>
+                <h1 class="logo">Mind<span>Reader</span>.ai</h1>
+                <p class="subtitle">Think of an object. Logic will find it.</p>
+            </header>
             
-            <div class="controls">
-                <button onclick="sendAnswer('yes')">Yes</button>
-                <button onclick="sendAnswer('no')">No</button>
-                <button onclick="sendAnswer('maybe')">Maybe</button>
+            <div class="content-wrapper">
+                <div id="status-indicator">Waiting for start...</div>
+                <h2 id="question-text">Are you ready to challenge the AI?</h2>
+                
+                <div class="controls">
+                    <button id="start-btn" class="btn-primary" onclick="startGame()">Start Experiment</button>
+                    
+                    <div id="game-btns" class="hidden">
+                        <button class="btn-action" onclick="sendAnswer('yes')">Yes</button>
+                        <button class="btn-action" onclick="sendAnswer('no')">No</button>
+                        <button class="btn-action" onclick="sendAnswer('maybe')">Maybe</button>
+                        <button class="btn-action" onclick="sendAnswer('dontknow')">Don't Know</button>
+                    </div>
+                </div>
             </div>
-        </main>
+        </section>
 
         <aside class="dashboard">
-            <h2>AI Reasoning</h2>
-            <div class="stat-item">
-                <span>Confidence:</span>
-                <div class="progress-bar"><div id="confidence-fill" style="width: 0%"></div></div>
-                <span id="confidence-value">0%</span>
+            <div class="panel-header">
+                <h3>AI Reasoning Engine</h3>
+                <div class="live-dot"></div>
             </div>
-            <div class="stat-item">
-                <span>Possibilities:</span>
-                <span id="remaining-count">Calculating...</span>
+
+            <div class="metric-box">
+                <div class="metric-header">
+                    <span>Confidence Score</span>
+                    <span id="conf-text">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div id="conf-bar" class="progress-fill" style="width: 0%"></div>
+                </div>
             </div>
-            <div class="predictions">
-                <h3>Top Predictions:</h3>
-                <ul id="prediction-list">
-                    <li>Waiting for input...</li>
+
+            <div class="metric-box">
+                <div class="metric-header">
+                    <span>Remaining Possibilities</span>
+                </div>
+                <div class="big-number" id="pool-count">Unknown</div>
+                <p class="explanation">Objects matching current criteria</p>
+            </div>
+
+            <div class="metric-box prediction-box">
+                <div class="metric-header">
+                    <span>Current Hypothesis</span>
+                </div>
+                <ul id="guess-list">
+                    <li class="placeholder">Waiting for data...</li>
                 </ul>
             </div>
         </aside>
+
     </div>
+
+    <footer class="data-flow-panel">
+        <h3>Live Data Pipeline</h3>
+        <div class="flow-diagram">
+            <div class="flow-node" id="node-input">
+                <span class="icon">🖱️</span>
+                <span class="label">User Input</span>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node" id="node-frontend">
+                <span class="icon">💻</span>
+                <span class="label">Frontend (JS)</span>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node" id="node-backend">
+                <span class="icon">⚙️</span>
+                <span class="label">Backend (Python)</span>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node" id="node-ai">
+                <span class="icon">🧠</span>
+                <span class="label">Llama 3 Model</span>
+            </div>
+        </div>
+    </footer>
+
     <script src="app.js"></script>
 </body>
 </html>

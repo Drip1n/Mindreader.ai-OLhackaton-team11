@@ -1,60 +1,222 @@
 :root {
-    --bg-color: #0f172a;
-    --card-bg: #1e293b;
-    --accent: #38bdf8;
-    --text: #f8fafc;
+    --bg-dark: #09090b;
+    --panel-bg: #18181b;
+    --accent: #3b82f6; /* Tech Blue */
+    --accent-glow: rgba(59, 130, 246, 0.5);
+    --text-main: #f4f4f5;
+    --text-muted: #a1a1aa;
+    --success: #10b981;
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    height: 100vh;
     display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Žiadne scrollovanie */
+}
+
+.app-container {
+    display: flex;
+    flex: 1;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* --- GAME CARD (Vľavo) --- */
+.game-card {
+    flex: 1.5;
+    background: var(--panel-bg);
+    border-radius: 16px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    text-align: center;
+    border: 1px solid #27272a;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+}
+
+.logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.5rem;
+    margin: 0;
+    letter-spacing: -2px;
+}
+.logo span { color: var(--accent); }
+.subtitle { color: var(--text-muted); margin-top: 5px; }
+
+#question-text {
+    font-size: 2rem;
+    margin: 40px 0;
+    min-height: 80px;
+    font-weight: 700;
+}
+
+/* Tlačidlá */
+.btn-primary, .btn-action {
+    background: var(--text-main);
+    color: var(--bg-dark);
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-action {
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    margin: 0 10px;
+}
+
+.btn-action:hover {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 0 15px var(--accent-glow);
+    transform: translateY(-2px);
+}
+
+.hidden { display: none; }
+
+/* --- DASHBOARD (Vpravo) --- */
+.dashboard {
+    flex: 1;
+    background: rgba(24, 24, 27, 0.8);
+    border-left: 1px solid #27272a;
+    padding: 30px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #3f3f46;
+    padding-bottom: 15px;
+}
+
+.live-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--success);
+    animation: blink 2s infinite;
+}
+
+.metric-header {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.progress-track {
+    background: #27272a;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: var(--accent);
+    height: 100%;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.big-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-main);
+}
+
+#guess-list {
+    list-style: none;
+    padding: 0;
     margin: 0;
 }
 
-.container {
+#guess-list li {
+    padding: 10px;
+    border-bottom: 1px solid #27272a;
+    animation: slideIn 0.4s ease-out forwards;
+    opacity: 0;
+}
+
+#guess-list li:nth-child(1) { animation-delay: 0.1s; }
+#guess-list li:nth-child(2) { animation-delay: 0.2s; }
+#guess-list li:nth-child(3) { animation-delay: 0.3s; }
+
+/* --- DATA FLOW PANEL (Novinka) --- */
+.data-flow-panel {
+    background: #000;
+    border-top: 1px solid var(--accent);
+    padding: 15px 30px;
     display: flex;
+    align-items: center;
+    gap: 30px;
+    height: 80px;
+}
+
+.data-flow-panel h3 {
+    font-size: 0.8rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    width: 150px;
+}
+
+.flow-diagram {
+    display: flex;
+    align-items: center;
     gap: 20px;
-    width: 90%;
-    max-width: 1000px;
+    flex: 1;
+    justify-content: center;
 }
 
-.game-box, .dashboard {
-    background: var(--card-bg);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+.flow-node {
+    background: #27272a;
+    padding: 8px 15px;
+    border-radius: 6px;
+    display: flex;
+    gap: 8px;
+    opacity: 0.3;
+    transition: all 0.3s;
+    border: 1px solid transparent;
 }
 
-.game-box { flex: 2; text-align: center; }
-.dashboard { flex: 1; border-left: 4px solid var(--accent); }
-
-button {
-    background: var(--accent);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    margin: 5px;
-    transition: transform 0.2s;
+.flow-node.active {
+    opacity: 1;
+    border-color: var(--accent);
+    background: rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 15px var(--accent-glow);
+    transform: scale(1.05);
 }
 
-button:hover { transform: scale(1.05); }
+.flow-arrow { color: #3f3f46; font-weight: bold; }
 
-.progress-bar {
-    background: #334155;
-    height: 10px;
-    border-radius: 5px;
-    margin: 10px 0;
-}
+/* Animácie */
+@keyframes blink { 50% { opacity: 0.5; } }
+@keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes pulseText { 0% { opacity: 0.5; } 100% { opacity: 1; } }
 
-#confidence-fill {
-    background: var(--accent);
-    height: 100%;
-    transition: width 0.5s ease-in-out;
-}
+.thinking { animation: pulseText 0.8s infinite alternate; color: var(--accent); }
