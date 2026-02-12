@@ -220,3 +220,56 @@ body {
 @keyframes pulseText { 0% { opacity: 0.5; } 100% { opacity: 1; } }
 
 .thinking { animation: pulseText 0.8s infinite alternate; color: var(--accent); }
+
+/* Move Restart button to bottom of game card */
+#restart-btn {
+    position: absolute;
+    bottom: 250px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Make game-card relative so absolute works */
+.game-card {
+    position: relative;
+}
+
+/* Final guess panel */
+.final-panel {
+    margin-top: 10px;
+    padding: 18px 20px;
+    border-radius: 14px;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    background: rgba(59, 130, 246, 0.08);
+    box-shadow: 0 0 18px rgba(59, 130, 246, 0.18);
+    max-width: 680px;
+}
+
+.final-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.final-guess {
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 6px;
+}
+
+.final-confidence {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.final-sub {
+    margin: 0;
+    color: var(--text-muted);
+}
+
