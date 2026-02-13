@@ -22,9 +22,11 @@ SYSTEM_PROMPT = (
     "We are playing 'Think of an object'.\n"
     "Ask ONE simple question answerable by: yes / no / maybe.\n"
     "Also provide exactly 3 best guesses with confidence percentages.\n"
+    "Crucially, provide a short 'reasoning' string explaining your thought process.\n"
     "Return ONLY valid JSON in this exact schema:\n"
     '{\n'
     '  "question": "string",\n'
+    '  "reasoning": "string",\n'
     '  "guesses": [\n'
     '    {"name": "string", "confidence": 0},\n'
     '    {"name": "string", "confidence": 0},\n'
@@ -34,6 +36,7 @@ SYSTEM_PROMPT = (
     "Rules:\n"
     "- confidence must be an integer 0..100\n"
     "- guesses must be length 3\n"
+    "- reasoning should be short (max 10 words)\n"
     "- No markdown. No extra keys."
 )
 
@@ -120,6 +123,7 @@ def ask_ai():
         parsed = safe_parse_json(raw)
 
         question = (parsed.get("question") or "").strip()
+        reasoning = (parsed.get("reasoning") or "Analyzing patterns...").strip()
         guesses = parsed.get("guesses")
 
         if not isinstance(question, str) or not question:
@@ -143,12 +147,15 @@ def ask_ai():
 
         top_guess = cleaned[0]
         llm_conf = top_guess["confidence"]
-        is_final = llm_conf >= 99
+        
+        # Changed threshold to 90 as requested for better flow
+        is_final = llm_conf >= 90
 
         game_data["last_question"] = question
 
         return jsonify({
             "question": question,
+            "reasoning": reasoning,
             "confidence": game_data["confidence"],   # keep your simulated bar
             "remaining": game_data["remaining"],
             "guesses": cleaned,                      # now objects with %!
@@ -158,6 +165,7 @@ def ask_ai():
         })
 
     except Exception as e:
+        print(e)
         return jsonify({"error": str(e), "ai_used": False}), 500
 
 if __name__ == "__main__":

@@ -8,6 +8,36 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
+  
+  <div id="overlay-container" class="overlay hidden">
+    
+    <div id="result-modal" class="modal-card hidden">
+      <div class="modal-header">I have a strong hunch!</div>
+      <div class="modal-content">
+        <p class="modal-label">Is your object a...</p>
+        <h2 id="modal-guess-text">Toaster?</h2>
+        <div class="modal-confidence" id="modal-confidence-text">95% match</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-success" onclick="confirmGuess()">YES, THAT'S IT!</button>
+        <button class="btn-cancel" onclick="rejectGuess()">NO, KEEP PLAYING</button>
+      </div>
+    </div>
+
+    <div id="celebration-modal" class="modal-card celebration hidden">
+      <div class="confetti-bg"></div>
+      <div class="modal-icon">🎉</div>
+      <div class="modal-header">Mind Read Successfully!</div>
+      <div class="modal-content">
+        <p>Logic has prevailed once again.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="restartGame()">Play Again</button>
+      </div>
+    </div>
+
+  </div>
+
   <div class="app-container">
 
     <section class="game-card">
@@ -21,24 +51,17 @@
 
         <h2 id="question-text">Are you ready to challenge the AI?</h2>
 
-        <!-- FINAL GUESS PANEL (hidden until final=true) -->
-        <div id="final-panel" class="final-panel hidden">
-          <div class="final-badge">FINAL GUESS</div>
-          <div class="final-guess" id="final-guess-text">I think it is: ___</div>
-          <div class="final-confidence" id="final-guess-confidence">99%</div>
-          <p class="final-sub">Was I right?</p>
-        </div>
-
         <div class="controls">
           <button id="start-btn" class="btn-primary" onclick="startGame()">Start Experiment</button>
-          <button id="restart-btn" class="btn-action hidden" onclick="restartGame()">New Game</button>
-
+          
           <div id="game-btns" class="hidden">
             <button class="btn-action" onclick="sendAnswer('yes')">Yes</button>
             <button class="btn-action" onclick="sendAnswer('no')">No</button>
             <button class="btn-action" onclick="sendAnswer('maybe')">Maybe</button>
             <button class="btn-action" onclick="sendAnswer('dontknow')">Don't Know</button>
           </div>
+          
+          <button id="restart-btn" class="btn-ghost hidden" onclick="restartGame()">Reset System</button>
         </div>
       </div>
     </section>
@@ -100,6 +123,9 @@
       <div class="flow-node" id="node-ai">
         <span class="icon">🧠</span>
         <span class="label">Llama 3 Model</span>
+        <div id="ai-reasoning-bubble" class="reasoning-bubble hidden">
+          <span id="reasoning-text">Initializing...</span>
+        </div>
       </div>
     </div>
   </footer>
